@@ -46,4 +46,9 @@ func main() {
 	}
 
 	fmt.Println(history)
+
+	if err := api.GetUserDetail(cred); err != nil {
+		fmt.Println(err)
+		return
+	}
 }

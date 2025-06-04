@@ -5,7 +5,7 @@ import "encoding/json"
 type PlayHistoryRecord struct {
 	TitleID         string `json:"titleId"`
 	TitleName       string `json:"titleName"`
-	DeviceType      string `json:"deviceType"`
+	Platform        string `json:"platform"`
 	ImageURL        string `json:"imageUrl"`
 	LastUpdatedAt   string `json:"lastUpdatedAt"`
 	FirstPlayedAt   string `json:"firstPlayedAt"`
@@ -22,6 +22,7 @@ type RecentPlayHistoryRecord struct {
 type DailyPlayHistoryRecord struct {
 	TitleID         string `json:"titleId"`
 	TitleName       string `json:"titleName"`
+	Platform        string `json:"platform"`
 	ImageURL        string `json:"imageUrl"`
 	TotalPlayedMins int    `json:"totalPlayedMinutes"`
 }
@@ -30,7 +31,6 @@ type UserPlayHistory struct {
 	PlayHistories       []PlayHistoryRecord `json:"playHistories"`
 	HiddenTitleList     []json.RawMessage   `json:"hiddenTitleList"` //	unknown
 	RecentPlayHistories []RecentPlayHistoryRecord
-	LastUpdatedAt       string `json:"lastUpdatedAt"`
 }
 
 func ParsePlayHistory(data []byte) (*UserPlayHistory, error) {
