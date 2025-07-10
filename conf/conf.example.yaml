@@ -1,0 +1,17 @@
+tasks:
+  - task_type: "RefreshJPTitlesXMLToDB"
+    task_name: "refresh_store_xml"
+    task_interval_min: 1440
+  - task_type: "RefreshJPTitlesSearchToDB"
+    task_name: "refresh_store_search"
+    task_interval_min: 1440
+  - task_type: "RenderCard"
+    task_name: "render_all_cards"
+    task_interval_min: 60
+db:
+  dsn: "postgres://"
+admin:
+  admin_users:
+    - "nintendo_id"
+http:
+  listen_addr: "0.0.0.0:8080"

@@ -1,67 +1,35 @@
 package main
 
 import (
-	"fmt"
+	"flag"
 
-	"github.com/chengchung/nscard/api"
-	"github.com/chengchung/nscard/games"
+	"github.com/chengchung/nscard/db"
+	"github.com/chengchung/nscard/httpview"
+	"github.com/chengchung/nscard/task"
+	"github.com/chengchung/nscard/utils"
+	"github.com/kataras/iris/v12"
+
+	_ "github.com/chengchung/nscard/httpview/viewimport"
+	_ "github.com/chengchung/nscard/task/taskimport"
 )
 
 func main() {
-	titles, err := games.GetTitleList(games.OptHardSwitch)
+	flag.Parse()
+	ParseConfig()
+
+	err := db.Init(cfg.DBConfig)
 	if err != nil {
-		fmt.Printf("获取游戏列表失败: %v\n", err)
-		return
-	}
-	fmt.Printf("获取游戏列表成功，共 %d 个游戏\n", len(titles))
-	for idx, title := range titles {
-		if idx%1000 == 0 {
-			fmt.Println(title)
-		}
+		panic(err)
 	}
 
-	client, err := api.NewAuthClient()
+	utils.InitAdminConfig(cfg.AdminConfig)
+
+	task.Init(cfg.TaskConfigs)
+
+	err = httpview.GetIrisApp().Run(iris.Addr(cfg.HttpConfig.ListenAddr))
 	if err != nil {
-		fmt.Println(err)
-		return
+		panic(err)
 	}
 
-	url, err := client.GetMyNintendoLoginURL()
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println(url)
-
-	fmt.Println("请输入回调地址：")
-	var callback string
-	fmt.Scanln(&callback)
-	if err := client.ParseCallbackURL(callback); err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	if err := client.GetSessionCode(); err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	cred, err := client.GetToken()
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	history, err := api.GetPlayHistory(cred)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	fmt.Println(history)
-
-	if err := api.GetUserDetail(cred); err != nil {
-		fmt.Println(err)
-		return
-	}
+	task.Stop()
 }
