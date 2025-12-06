@@ -41,13 +41,14 @@ type DailyPlayHistoryRecord struct {
 }
 
 func GetPlayHistory(auth_header string) (*UserPlayHistory, error) {
-	request, err := http.NewRequest("GET", "https://news-api.entry.nintendo.co.jp/api/v1.2/users/me/play_histories", nil)
+	request, err := http.NewRequest("GET", "https://app-api.znej.nintendo.com/api/v2.0/users/me/play_histories", nil)
 	if err != nil {
 		return nil, err
 	}
 
 	request.Header.Set("Authorization", auth_header)
 	request.Header.Set("User-Agent", nintendo.UserAgent)
+	request.Header.Set("gentry-locale", nintendo.GentryLocale)
 
 	resp, err := client.Do(request)
 	if err != nil {
